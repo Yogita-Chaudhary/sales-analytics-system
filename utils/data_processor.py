@@ -54,7 +54,7 @@ def top_selling_products(transactions, n=5):
     product_list = []
     for name, data in product_totals.items():
         product_list.append((name, data['total_qty'], data['total_revenue']))
-    # 3. Sort by TotalQuantity (the middle item in the tuple) in descending order
+    # 3. Sort by TotalQuantity in descending order
     sorted_products = sorted(product_list, key=lambda x: x[1], reverse=True)
     # 4. Return only the top 'n' items
     return sorted_products[:n]
@@ -81,7 +81,7 @@ def customer_analysis(transactions):
         # Only add product if it's not already in their list (Requirement: Unique products)
         if product not in customer_stats[c_id]['products_bought']:
             customer_stats[c_id]['products_bought'].append(product)
-    # Calculate Average Order Value and Sort
+    # Calculate Average Order Value
     for c_id in customer_stats:
         stats = customer_stats[c_id]
         stats['avg_order_value'] = round(
@@ -110,7 +110,7 @@ def daily_sales_trend(transactions):
             daily_data[date] = {
                 'revenue': 0.0,
                 'transaction_count': 0,
-                'customers': set()  # Using a set to automatically keep only unique names
+                'customers': set()
             }
         # 3. STEP: Accumulate the values
         daily_data[date]['revenue'] += revenue

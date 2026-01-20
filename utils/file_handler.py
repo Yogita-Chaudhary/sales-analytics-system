@@ -97,7 +97,6 @@ def display_filter_options(transactions):
     """
     Display available filter options and collect filter inputs from the user.
     """
-    # Filter Display: Help the user see what they can filter by
     available_regions = sorted(
         list(set(t['Region'] for t in transactions)))
     amounts = [t['Quantity'] * t['UnitPrice'] for t in transactions]
@@ -181,7 +180,6 @@ def apply_amount_filter(valid_transactions, min_amount, max_amount):
         print(f"Records after amount filter: {len(valid_transactions)}")
         return 0
     pre_count = len(valid_transactions)
-    # keep only matching records
     valid_transactions[:] = [
         t for t in valid_transactions
         if (min_amount is None or (t["Quantity"] * t["UnitPrice"]) > min_amount)
@@ -238,7 +236,6 @@ def generate_sales_report(transactions, enriched_transactions, output_file='outp
     """
     print("\n[9/10] Generating report...")
     try:
-        # Create directory if missing
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         total_records = len(transactions)
         # API Stats
@@ -317,7 +314,6 @@ def generate_sales_report(transactions, enriched_transactions, output_file='outp
         low_names = [p[0] for p in ANALYTICS_RESULTS['low_performers'][:3]]
         report.append(
             f"Low performing products:        {', '.join(low_names) if low_names else 'None'}")
-        # Added Requirement: Avg Transaction Value per Region
         avg_reg_val = ANALYTICS_RESULTS['total_revenue'] / \
             len(ANALYTICS_RESULTS['region_wise_performance']
                 ) if ANALYTICS_RESULTS['region_wise_performance'] else 0
