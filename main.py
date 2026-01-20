@@ -1,4 +1,6 @@
 from utils.file_handler import read_sales_data, parse_transactions, validate_and_filter
+from utils.data_processor import run_analytics
+from utils.api_handler import fetch_all_products
 
 def main():
     try:
@@ -13,6 +15,12 @@ def main():
         # [2/10] PARSE THE DATA
         parsed_data = parse_transactions(raw_lines)
         valid_transactions, invalid_count, filter_summary = validate_and_filter(parsed_data)
+        # [5/10] ANALYSIS
+        run_analytics(valid_transactions)
+
+        # [6-8] API & ENRICHMENT
+        api_raw = fetch_all_products()
+        
     except Exception as e:
         print(f"\n✕ Error: {e}")
 
