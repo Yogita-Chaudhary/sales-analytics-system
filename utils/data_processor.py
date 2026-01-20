@@ -1,4 +1,3 @@
-from collections import defaultdict
 
 # Calculate Total Revenue
 def calculate_total_revenue(transactions):
