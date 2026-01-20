@@ -12,7 +12,7 @@ def main():
             return
         # [2/10] PARSE THE DATA
         parsed_data = parse_transactions(raw_lines)
-        valid_transactions, invalid_count = validate_and_filter(parsed_data)
+        valid_transactions, invalid_count, filter_summary = validate_and_filter(parsed_data)
     except Exception as e:
         print(f"\n✕ Error: {e}")
 

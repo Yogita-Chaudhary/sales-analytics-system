@@ -90,10 +90,86 @@ def validate_data(transactions):
             valid_transactions.append(tx)
     return valid_transactions, total_input, invalid_count
 
+#Function to display filter
+def display_filter_options(transactions):
+    """
+    Display available filter options and collect filter inputs from the user.
+    """
+    # Filter Display: Help the user see what they can filter by
+    available_regions = sorted(
+        list(set(t['Region'] for t in transactions)))
+    amounts = [t['Quantity'] * t['UnitPrice'] for t in transactions]
+    print("\n[3/10] Filter Options Available:")
+    print(f"Available Regions: {', '.join(available_regions)}")
+    if amounts:
+        print(
+            f"Transaction Amount Range: Min: {min(amounts):.2f}, Max: {max(amounts):.2f}")
+    is_filter_valid = False
+    yes_values = ['y', 'yes']
+    no_values = ['n', 'no']
+    while not is_filter_valid:
+        want_filter = input(
+            "Do you want to filter data? (y/n): ").lower().strip()
+        if want_filter in yes_values + no_values:
+            is_filter_valid = True
+        else:
+            print('Give a valid input')
+
+    region = None
+    min_amount = None
+    max_amount = None
+
+    if want_filter in yes_values:
+        is_valid = False
+
+        while not is_valid:
+            user_region = input("Enter Region (or leave blank): ").strip()
+            if user_region == "":
+                is_valid = True
+            elif user_region != "" and user_region.isalpha() and user_region.title() in available_regions:
+                is_valid = True
+                region = user_region.title()
+            else:
+                print("Region should be from the list of available regions.")
+
+        is_valid = False
+        while not is_valid:
+            user_min = input("Enter Minimum Amount (or leave blank): ").strip()
+            if user_min == "":
+                is_valid = True
+            elif user_min != "" and user_min.isnumeric() and float(user_min) >= 0:
+                is_valid = True
+                min_amount = float(user_min)
+            else:
+                print("Minimum amount should be numeric and greater than 0.")
+        is_valid = False
+        while not is_valid:
+            user_max = input("Enter Maximum Amount (or leave blank): ").strip()
+            if user_max == "":
+                is_valid = True
+            elif user_max != "" and user_max.isnumeric() and float(user_max) > float(user_min if user_min else 0):
+                is_valid = True
+                max_amount = float(user_max)
+            else:
+                print(
+                    "Maximum amount should be numeric and greater than minimum amount.")
+    return region, min_amount, max_amount
+
+
+
 #Function to validate, filter and make summary of the data
 def validate_and_filter(transactions, region=None, min_amount=None, max_amount=None):
     """
     Validate parsed transactions and apply optional region/amount filters.
     """
-    valid_transactions, invalid_count = validate_data(transactions)
+    valid_transactions, invalid_count, total_input = validate_data(transactions)
+    print("-" * 30)
+    print('Summary of valid records after cleaning the data:')
+    # --- REQUIRED OUTPUT FORMAT ---
+    print(f"Total records parsed: {total_input}")
+    print(f"Invalid records removed: {invalid_count}")
+    print("-" * 30)
+
+    region, min_amount, max_amount = display_filter_options(valid_transactions)
+    
     return valid_transactions, invalid_count
