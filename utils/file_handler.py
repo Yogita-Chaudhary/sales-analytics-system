@@ -70,3 +70,30 @@ def parse_transactions(raw_lines):
 
 # ========================================================================
 
+#Function to validate data
+def validate_data(transactions):
+    """
+    Validate parsed transactions and remove invalid records.
+    """
+    valid_transactions = []
+    invalid_count = 0
+    total_input = len(transactions)
+    for tx in transactions:
+        missing_data = (tx['CustomerID'] == '' or tx['Region'] == '')
+        incorrect_number = tx['Quantity'] <= 0 or tx['UnitPrice'] <= 0
+        incorrect_ID = not (tx['TransactionID'].startswith('T') and
+                            tx['ProductID'].startswith('P') and
+                            tx['CustomerID'].startswith('C'))
+        if missing_data or incorrect_number or incorrect_ID:
+            invalid_count += 1
+        else:
+            valid_transactions.append(tx)
+    return valid_transactions, total_input, invalid_count
+
+#Function to validate, filter and make summary of the data
+def validate_and_filter(transactions, region=None, min_amount=None, max_amount=None):
+    """
+    Validate parsed transactions and apply optional region/amount filters.
+    """
+    valid_transactions, invalid_count = validate_data(transactions)
+    return valid_transactions, invalid_count
