@@ -3,6 +3,14 @@ from utils.data_processor import run_analytics
 from utils.api_handler import fetch_all_products, create_product_mapping, enrich_sales_data, save_enriched_data
 
 def main():
+    print(r"""
+    __        __   _                            _ 
+    \ \      / /__| | ___ ___  _ __ ___   ___  | |
+     \ \ /\ / / _ \ |/ __/ _ \| '_ ` _ \ / _ \ | |
+      \ V  V /  __/ | (_| (_) | | | | | |  __/ |_|
+       \_/\_/ \___|_|\___\___/|_| |_| |_|\___| (_)
+    """)
+
     try:
         print("=" * 55)
         print("               SALES ANALYTICS SYSTEM         ")
