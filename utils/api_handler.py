@@ -37,3 +37,26 @@ def fetch_all_products():
 
 # ====================================================================================
 
+#Function for product mapping
+def create_product_mapping(api_products):
+    """
+    Creates a mapping of product IDs to product info.
+    """
+    # 1. STEP: Initialize an empty dictionary
+    mapping = {}
+    for item in api_products:
+        # 2. STEP: Get the ID and ensure it is an integer
+        product_id = item['id']
+        # 3. STEP: Create the 'Value' dictionary with only the required fields
+        product_info = {
+            'title': item.get('title'),
+            'category': item.get('category'),
+            'brand': item.get('brand'),
+            'rating': item.get('rating')
+        }
+        # 4. STEP: Assign the info to that specific ID key
+        mapping[product_id] = product_info
+    return mapping
+
+# ====================================================================================
+

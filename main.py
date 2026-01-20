@@ -1,6 +1,6 @@
 from utils.file_handler import read_sales_data, parse_transactions, validate_and_filter
 from utils.data_processor import run_analytics
-from utils.api_handler import fetch_all_products
+from utils.api_handler import fetch_all_products, create_product_mapping
 
 def main():
     try:
@@ -20,6 +20,8 @@ def main():
 
         # [6-8] API & ENRICHMENT
         api_raw = fetch_all_products()
+        product_mapping = create_product_mapping(api_raw)
+        
         
     except Exception as e:
         print(f"\n✕ Error: {e}")
