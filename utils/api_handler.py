@@ -60,3 +60,78 @@ def create_product_mapping(api_products):
 
 # ====================================================================================
 
+#Function to enrich sales data
+def enrich_sales_data(filtered_list, product_mapping):
+    """
+    Enrich sales transactions with API product metadata.
+    """
+    enriched_list = []
+    print("\n[7/10] Enriching sales data...")
+    for tx in filtered_list:
+        # 1. Get ProductID using the exact key from Task 1
+        pid = tx.get('ProductID')
+
+        print(f"Processing Transaction: {tx.get('TransactionID')} | Product: {pid}")
+
+        try:
+            numeric_id = int(str(pid).replace('P', '').replace('p', ''))
+        except:
+            numeric_id = None
+
+        # 2. Add API Fields
+        if numeric_id in product_mapping:
+            info = product_mapping[numeric_id]
+            tx['API_Category'] = info.get('category', 'N/A')
+            tx['API_Brand'] = info.get('brand', 'N/A')
+            tx['API_Rating'] = info.get('rating', 0.0)
+            tx['API_Match'] = True
+        else:
+            tx['API_Category'] = "N/A"
+            tx['API_Brand'] = "N/A"
+            tx['API_Rating'] = 0.0
+            tx['API_Match'] = False
+
+        enriched_list.append(tx)
+    print(
+        f"✓ Enriched {len(enriched_list)}/{len(filtered_list)} transactions.")
+    return enriched_list
+
+# ====================================================================================
+
+# Helper function to save enriched data
+def save_enriched_data(enriched_list, output_file='data/enriched_sales_data.txt'):
+    """
+    Save enriched transaction data to a text file.
+    """
+    print("\n[8/10] Saving enriched data...")
+    # 1. Writing to file
+    try:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            headers = ["TransactionID", "Date", "ProductID", "ProductName",
+                       "Quantity", "UnitPrice", "CustomerID", "Region",
+                       "API_Category", "API_Brand", "API_Rating", "API_Match"]
+            f.write("|".join(headers) + "\n")
+
+            for item in enriched_list:
+                row = [
+                    str(item.get('TransactionID', 'N/A')),
+                    str(item.get('Date', 'N/A')),
+                    str(item.get('ProductID', 'N/A')),
+                    str(item.get('ProductName', 'N/A')),
+                    str(item.get('Quantity', 0)),
+                    str(item.get('UnitPrice', 0.0)),
+                    str(item.get('CustomerID', 'N/A')),
+                    str(item.get('Region', 'N/A')),
+                    str(item.get('API_Category')),
+                    str(item.get('API_Brand')),
+                    str(item.get('API_Rating')),
+                    str(item.get('API_Match'))
+                ]
+                f.write("|".join(row) + "\n")
+
+        print(
+            f"✓ Success: {output_file} has been created with {len(enriched_list)} rows.")
+    except Exception as e:
+        print(f"✕ File writing failed: {e}")
+
+    return enriched_list

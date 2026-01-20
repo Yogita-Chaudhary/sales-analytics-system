@@ -1,6 +1,6 @@
 from utils.file_handler import read_sales_data, parse_transactions, validate_and_filter
 from utils.data_processor import run_analytics
-from utils.api_handler import fetch_all_products, create_product_mapping
+from utils.api_handler import fetch_all_products, create_product_mapping, enrich_sales_data, save_enriched_data
 
 def main():
     try:
@@ -21,6 +21,8 @@ def main():
         # [6-8] API & ENRICHMENT
         api_raw = fetch_all_products()
         product_mapping = create_product_mapping(api_raw)
+        enriched_data = enrich_sales_data(valid_transactions, product_mapping)
+        save_enriched_data(enriched_data)
         
         
     except Exception as e:
