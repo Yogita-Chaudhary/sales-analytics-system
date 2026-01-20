@@ -155,7 +155,39 @@ def display_filter_options(transactions):
                     "Maximum amount should be numeric and greater than minimum amount.")
     return region, min_amount, max_amount
 
+# Function to apply region filter
+def apply_region_filter(valid_transactions, region):
+    """
+    Filter transactions by region.
+    """
+    region_filtered_count = 0
+    if region:
+        pre_count = len(valid_transactions)
+        valid_transactions[:] = [
+            t for t in valid_transactions if t["Region"] == region]
+        region_filtered_count = pre_count - len(valid_transactions)
+        print(f"Records after region filter: {len(valid_transactions)}")
+    return region_filtered_count
 
+# Function to apply amount filter
+def apply_amount_filter(valid_transactions, min_amount, max_amount):
+    """
+    Filter transactions by total transaction amount.
+    """
+    # Amount Filter (Quantity * UnitPrice)
+    if min_amount is None and max_amount is None:
+        print(f"Records after amount filter: {len(valid_transactions)}")
+        return 0
+    pre_count = len(valid_transactions)
+    # keep only matching records
+    valid_transactions[:] = [
+        t for t in valid_transactions
+        if (min_amount is None or (t["Quantity"] * t["UnitPrice"]) > min_amount)
+        and (max_amount is None or (t["Quantity"] * t["UnitPrice"]) <= max_amount)
+    ]
+    amt_filtered_count = pre_count - len(valid_transactions)
+    print(f"Records after amount filter: {len(valid_transactions)}")
+    return amt_filtered_count
 
 #Function to validate, filter and make summary of the data
 def validate_and_filter(transactions, region=None, min_amount=None, max_amount=None):
@@ -168,8 +200,29 @@ def validate_and_filter(transactions, region=None, min_amount=None, max_amount=N
     # --- REQUIRED OUTPUT FORMAT ---
     print(f"Total records parsed: {total_input}")
     print(f"Invalid records removed: {invalid_count}")
+    print(f"Valid records after cleaning: {len(valid_transactions)}")
     print("-" * 30)
 
     region, min_amount, max_amount = display_filter_options(valid_transactions)
-    
-    return valid_transactions, invalid_count
+
+    # [4/10] Validating and Applying Filters
+    print("\n[4/10] Validating transactions...")
+    region_filtered_count = apply_region_filter(valid_transactions, region)
+    amt_filtered_count = apply_amount_filter(
+        valid_transactions, min_amount, max_amount)
+
+    # Summary Report
+    filter_summary = {
+        'Total_Input': total_input,
+        'Invalid_Count': invalid_count,
+        'Filtered_by_Region': region_filtered_count,
+        'Filtered_by_Amount': amt_filtered_count,
+        'Final_Count': len(valid_transactions)
+    }
+    print(f"✓ Valid: {len(valid_transactions)} | Invalid: {invalid_count}")
+    print("\n--- DATA VALIDATION SUMMARY ---")
+    for key, value in filter_summary.items():
+        display_name = key.replace('_', ' ').title()
+        print(f"{display_name:<20}: {value}")
+    print("-" * 30)
+    return valid_transactions, invalid_count, filter_summary
