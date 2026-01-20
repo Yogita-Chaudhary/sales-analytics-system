@@ -71,8 +71,6 @@ def enrich_sales_data(filtered_list, product_mapping):
         # 1. Get ProductID using the exact key from Task 1
         pid = tx.get('ProductID')
 
-        print(f"Processing Transaction: {tx.get('TransactionID')} | Product: {pid}")
-
         try:
             numeric_id = int(str(pid).replace('P', '').replace('p', ''))
         except:
