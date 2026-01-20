@@ -1,4 +1,4 @@
-from utils.file_handler import read_sales_data, parse_transactions, validate_and_filter
+from utils.file_handler import read_sales_data, parse_transactions, validate_and_filter, generate_sales_report
 from utils.data_processor import run_analytics
 from utils.api_handler import fetch_all_products, create_product_mapping, enrich_sales_data, save_enriched_data
 
@@ -24,10 +24,17 @@ def main():
         enriched_data = enrich_sales_data(valid_transactions, product_mapping)
         save_enriched_data(enriched_data)
         
+        # [9/10] Generating report (ALL FIELDS)
+        generate_sales_report(
+            transactions=valid_transactions,
+            enriched_transactions=enriched_data
+        )
         
+        # 10/10 PROCESS COMPLETED
+        print("\n[10/10] Process Complete!")
+
     except Exception as e:
         print(f"\n✕ Error: {e}")
-
 
 if __name__ == "__main__":
     main()
